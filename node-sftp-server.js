@@ -134,36 +134,34 @@ var SFTPServer = (function(superClass) {
     SFTPServer.options = options;
     this.server = new ssh2.Server({
       hostKeys: [fs.readFileSync(options.privateKeyFile)]
-    }, (function(_this) {
-      return function(client, info) {
-        client.on('error', function(err) {
-          debug("SFTP Server: error");
-          return _this.emit("error", err);
-        });
-        client.on('authentication', function(ctx) {
-          debug("SFTP Server: on('authentication')");
-          _this.auth_wrapper = new ContextWrapper(ctx, _this);
-          return _this.emit("connect", _this.auth_wrapper, info);
-        });
-        client.on('end', function() {
-          debug("SFTP Server: on('end')");
-          return _this.emit("end");
-        });
-        return client.on('ready', function(channel) {
-          client._sshstream.debug = debug;
-          return client.on('session', function(accept, reject) {
-            var session;
-            session = accept();
-            return session.on('sftp', function(accept, reject) {
-              var sftpStream;
-              sftpStream = accept();
-              session = new SFTPSession(sftpStream);
-              return _this._session_start_callback(session);
-            });
+    }, client => {
+      client.on('error', function(err) {
+        debug("SFTP Server: error");
+        return this.emit("error", err);
+      });
+      client.on('authentication', function(ctx) {
+        debug("SFTP Server: on('authentication')");
+        client.auth_wrapper = new ContextWrapper(ctx, client);
+        return this.emit("connect", client.auth_wrapper, info);
+      });
+      client.on('end', function() {
+        debug("SFTP Server: on('end')");
+        return this.emit("end");
+      });
+      return client.on('ready', function(channel) {
+        client._sshstream.debug = debug;
+        return client.on('session', function(accept, reject) {
+          var session;
+          session = accept();
+          return session.on('sftp', function(accept, reject) {
+            var sftpStream;
+            sftpStream = accept();
+            session = new SFTPSession(sftpStream);
+            return client._session_start_callback(session);
           });
         });
-      };
-    })(this));
+      });
+    };
   }
 
   SFTPServer.prototype.listen = function(port) {
