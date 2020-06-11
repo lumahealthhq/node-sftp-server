@@ -125,6 +125,7 @@ var SFTPServer = (function(superClass) {
   extend(SFTPServer, superClass);
 
   function SFTPServer(options) {
+    const self = this;    
     // Expose options for the other classes to read.
     if (!options) options = { privateKeyFile: 'ssh_host_rsa_key' };
     if (typeof options === 'string') options = { privateKeyFile: options }; // Original constructor had just a privateKey string, so this preserves backwards compatibility.
@@ -134,19 +135,19 @@ var SFTPServer = (function(superClass) {
     SFTPServer.options = options;
     this.server = new ssh2.Server({
       hostKeys: [fs.readFileSync(options.privateKeyFile)]
-    }, client => {
+    }, (client) => {
       client.on('error', function(err) {
         debug("SFTP Server: error");
-        return this.emit("error", err);
+        return self.emit("error", err);
       });
       client.on('authentication', function(ctx) {
         debug("SFTP Server: on('authentication')");
         client.auth_wrapper = new ContextWrapper(ctx, client);
-        return this.emit("connect", client.auth_wrapper, info);
+        return self.emit("connect", client.auth_wrapper);
       });
       client.on('end', function() {
         debug("SFTP Server: on('end')");
-        return this.emit("end");
+        return self.emit("end");
       });
       return client.on('ready', function(channel) {
         client._sshstream.debug = debug;
