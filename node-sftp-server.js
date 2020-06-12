@@ -162,7 +162,7 @@ var SFTPServer = (function(superClass) {
           });
         });
       });
-    };
+    });
   }
 
   SFTPServer.prototype.listen = function(port) {
