@@ -76,14 +76,11 @@ var DirectoryEmitter = (function(superClass) {
     }
   };
 
-  DirectoryEmitter.prototype.file = function(name, attrs) {
-    if (typeof attrs === 'undefined') {
-      attrs = {};
-    }
+  DirectoryEmitter.prototype.file = function(filename, longname, attrs) {
     this.stopped = this.sftpStream.name(this.req, {
-      filename: name.toString(),
-      longname: name.toString(),
-      attrs: attrs
+      filename: filename.toString(),
+      longname,
+      attrs,
     });
     if (!this.stopped && !this.done) {
       return this.emit("dir");
@@ -125,7 +122,7 @@ var SFTPServer = (function(superClass) {
   extend(SFTPServer, superClass);
 
   function SFTPServer(options) {
-    const self = this;    
+    const self = this;
     // Expose options for the other classes to read.
     if (!options) options = { privateKeyFile: 'ssh_host_rsa_key' };
     if (typeof options === 'string') options = { privateKeyFile: options }; // Original constructor had just a privateKey string, so this preserves backwards compatibility.
@@ -413,7 +410,7 @@ var SFTPSession = (function(superClass) {
         }
       }.bind(this));
     }
-     
+
     // If we're not at EOF from the buffer yet, we either need to put more data
     // down the wire, or need to wait for more data to become available.
     return fs.stat(localHandle.tmpPath, function(err, stats) {
