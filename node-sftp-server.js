@@ -371,6 +371,7 @@ var SFTPSession = (function(superClass) {
           return this.sftpStream.handle(reqid, handle);
         }.bind(this));
       case "w":
+      case "wx": // some clients send wx flags when they're trying to write
         rs = new Readable();
         started = false;
         rs._read = (function(_this) {
