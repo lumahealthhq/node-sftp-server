@@ -388,7 +388,7 @@ var SFTPSession = (function(superClass) {
         })(this);
         return this.emit("writefile", pathname, rs);
       default:
-        return this.emit("error", new Error("Unknown open flags: " + stringflags + " " + falgs));
+        return this.emit("error", new Error("Unknown open flags: " + stringflags + " " + flags));
     }
   };
 
