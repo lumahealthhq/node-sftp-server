@@ -132,7 +132,7 @@ var SFTPServer = (function(superClass) {
     SFTPServer.options = options;
     this.server = new ssh2.Server({
       hostKeys: [fs.readFileSync(options.privateKeyFile)]
-    }, (client) => {
+    }, (client, info) => {
       client.on('error', function(err) {
         debug("SFTP Server: error");
         return self.emit("error", err);
@@ -140,7 +140,7 @@ var SFTPServer = (function(superClass) {
       client.on('authentication', function(ctx) {
         debug("SFTP Server: on('authentication')");
         client.auth_wrapper = new ContextWrapper(ctx, client);
-        return self.emit("connect", client.auth_wrapper);
+        return self.emit("connect", client.auth_wrapper, info);
       });
       client.on('end', function() {
         debug("SFTP Server: on('end')");
