@@ -20,9 +20,9 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "ssh2": "^1.17.0",
+    "ssh2": "0.5.x",
     "ssh2-streams": "^0.0.21",
-    "tmp": "^0.2.5"
+    "tmp": "^0.0.30"
   },
   "bugs": {
     "url": "https://github.com/BriteVerify/node-sftp-server/issues"
