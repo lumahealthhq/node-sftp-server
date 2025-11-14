@@ -128,7 +128,10 @@ var SFTPServer = (function(superClass) {
     }
     SFTPServer.options = options;
     this.server = new ssh2.Server({
-      hostKeys: [fs.readFileSync(options.privateKeyFile)]
+      hostKeys: [fs.readFileSync(options.privateKeyFile)],
+      algorithms: {
+        cipher: ['aes256-gcm@openssh.com', 'aes128-gcm@openssh.com', 'chacha20-poly1305@openssh.com', 'aes256-ctr', 'aes128-ctr', 'aes256-cbc']
+      }
     }, (client, info) => {
       client.on('error', function(err) {
         debug("SFTP Server: error");
