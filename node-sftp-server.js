@@ -130,6 +130,18 @@ var SFTPServer = (function(superClass) {
     this.server = new ssh2.Server({
       hostKeys: [fs.readFileSync(options.privateKeyFile)],
       algorithms: {
+		kex: [
+			"curve25519-sha256",
+			"curve25519-sha256@libssh.org",
+			"ecdh-sha2-nistp256",
+			"ecdh-sha2-nistp384",
+			"ecdh-sha2-nistp521",
+			"diffie-hellman-group14-sha256",
+			"diffie-hellman-group15-sha512",
+			"diffie-hellman-group16-sha512",
+			"diffie-hellman-group17-sha512",
+			"diffie-hellman-group18-sha512",
+		],
         cipher: ['aes256-gcm@openssh.com', 'aes128-gcm@openssh.com', 'chacha20-poly1305@openssh.com', 'aes256-ctr', 'aes128-ctr', 'aes256-cbc']
       }
     }, (client, info) => {
