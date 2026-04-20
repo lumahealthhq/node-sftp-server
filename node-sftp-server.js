@@ -166,6 +166,9 @@ var SFTPServer = (function(superClass) {
             var sftpStream;
             sftpStream = accept();
             session = new SFTPSession(sftpStream);
+            sftpStream.on('end', function() {
+              client.end();
+            });
             return client._session_start_callback(session);
           });
         });
